@@ -17,13 +17,15 @@ function toggleHttp(ip: string) {
   return Effect.gen(function* () {
     const json = yield* Effect.tryPromise({
       try: () =>
-        fetch(`http://${ip}/rpc/Switch.Toggle?id=0`).then((x) => x.json()),
+        fetch(`http://${ip}/rpc/Switch.Toggle?id=0`).then(
+          (x) => x.json() as unknown,
+        ),
       catch: (error) => null,
     });
     yield* Console.log(json);
 
     yield* Console.log("Running", ip);
-  });
+  }).pipe(Effect.catchAll(() => Effect.succeed(null)));
 }
 
 function runSequence(ip: string, sequence: number[]) {
