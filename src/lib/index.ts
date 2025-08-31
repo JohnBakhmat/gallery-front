@@ -18,11 +18,7 @@ function toggleHttp(ip: string) {
     const json = yield* Effect.tryPromise({
       try: () =>
         fetch(`http://${ip}/rpc/Switch.Toggle?id=0`).then((x) => x.json()),
-      catch: (error) =>
-        new UnknownError({
-          cause: { error, ip },
-          message: "Fetch returned some bullshit",
-        }),
+      catch: (error) => null,
     });
     yield* Console.log(json);
 
@@ -54,6 +50,6 @@ export const startSequence = Effect.gen(function* () {
       runSequence(devices.left, left),
       runSequence(devices.right, right),
     ],
-    { concurrency: "unbounded" },
+    { concurrency: "unbounded", mode: "either" },
   );
 });
