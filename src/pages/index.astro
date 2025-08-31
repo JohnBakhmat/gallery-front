@@ -1,5 +1,6 @@
 ---
-
+import { PlayButton } from "../components/play-button"
+import "../styles/global.css"
 ---
 
 <html lang="en">
@@ -11,6 +12,8 @@
 		<title>Astro</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<div class="grid place-items-center min-h-screen w-full">
+			<PlayButton client:only/>
+		</div>
 	</body>
 </html>
