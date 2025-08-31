@@ -1,5 +1,6 @@
 import { makeAudio } from "@solid-primitives/audio"
-
+import { startSequence } from "../lib"
+import { Effect } from "effect"
 
 const SOUND_FILE = "/moo.wav"
 
@@ -8,7 +9,10 @@ export function PlayButton() {
 	const player = makeAudio(SOUND_FILE)
 
 	const handleClick = async () => {
-		await player.play()
+		await Promise.all([
+			player.play(),
+			Effect.runPromise(startSequence)
+		])
 	}
 
 	return (

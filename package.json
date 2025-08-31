@@ -13,7 +13,11 @@
     "@solid-primitives/audio": "^1.4.2",
     "@tailwindcss/vite": "^4.1.12",
     "astro": "^5.13.4",
+    "effect": "^3.17.9",
     "solid-js": "^1.9.9",
     "tailwindcss": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.21"
   }
 }
