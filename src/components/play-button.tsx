@@ -6,7 +6,7 @@ import { createEventSignal } from "@solid-primitives/event-listener";
 import { createEffect, createSignal } from "solid-js";
 
 const SOUND_FILE = "/moo.wav";
-const WS_URL = "ws://192.168.50.12:3001";
+const WS_URL = import.meta.env.WS_URL ?? "ws://192.168.50.12:3001";
 
 export function PlayButton() {
   const [lastMessage, setLastMessage] = createSignal<string>("");
@@ -22,7 +22,7 @@ export function PlayButton() {
     }
   });
 
-  createEffect(async () => {
+  createEffect(() => {
     const message = messageEvent();
     if (message) {
       const data = message.data;
@@ -30,7 +30,7 @@ export function PlayButton() {
       setLastMessage(data);
 
       if (data === "start") {
-        await start();
+        start();
       }
     }
   });

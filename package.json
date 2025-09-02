@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "start:ws": "bun run server.ts",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -23,3 +24,4 @@
     "@types/bun": "^1.2.21"
   }
 }
+
