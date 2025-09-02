@@ -1,23 +1,60 @@
-import { makeAudio } from "@solid-primitives/audio"
-import { startSequence } from "../lib"
-import { Effect } from "effect"
+import { makeAudio } from "@solid-primitives/audio";
+import { startSequence } from "../lib";
+import { Effect } from "effect";
+import { createWS } from "@solid-primitives/websocket";
+import { createEventSignal } from "@solid-primitives/event-listener";
+import { createEffect, createSignal } from "solid-js";
 
-const SOUND_FILE = "/moo.wav"
+const SOUND_FILE = "/moo.wav";
 
 export function PlayButton() {
+  const [lastMessage, setLastMessage] = createSignal<string>("");
+  const ws = createWS("ws://192.168.50.12:3001");
+  const messageEvent = createEventSignal(ws, "message");
 
-	const player = makeAudio(SOUND_FILE)
+  const player = makeAudio(SOUND_FILE);
 
-	const handleClick = async () => {
-		await Promise.all([
-			player.play(),
-			Effect.runPromise(startSequence)
-		])
-	}
+  createEffect(() => {
+    const readyState = ws.readyState;
+    if (readyState === WebSocket.OPEN) {
+      console.log("WebSocket connected");
+    }
+  });
 
-	return (
-		<button type="button" class="bg-gray-500 text-4xl px-4 py-2" onclick={handleClick}>
-			Запустить
-		</button>
-	)
+  createEffect(async () => {
+    const message = messageEvent();
+    if (message) {
+      const data = message.data;
+      console.log("Received WebSocket message:", data);
+      setLastMessage(data);
+
+      if (data === "start") {
+        await start();
+      }
+    }
+  });
+
+  const start = async () => {
+    await Promise.all([player.play(), Effect.runPromise(startSequence)]);
+  };
+
+  const handleClick = async () => {
+    ws.send("start");
+    await start();
+  };
+
+  return (
+    <div class="text-center space-y-4">
+      <div class="text-sm text-gray-600">
+        Last message: {lastMessage() || "None"}
+      </div>
+      <button
+        type="button"
+        class="bg-gray-500 text-4xl px-4 py-2"
+        onclick={handleClick}
+      >
+        Запустить
+      </button>
+    </div>
+  );
 }
