@@ -1,15 +1,16 @@
 import { makeAudio } from "@solid-primitives/audio";
 import { startSequence } from "../lib";
 import { Effect } from "effect";
-import { createWS } from "@solid-primitives/websocket";
+import { createReconnectingWS, createWS } from "@solid-primitives/websocket";
 import { createEventSignal } from "@solid-primitives/event-listener";
 import { createEffect, createSignal } from "solid-js";
 
 const SOUND_FILE = "/moo.wav";
+const WS_URL = "ws://192.168.50.12:3001";
 
 export function PlayButton() {
   const [lastMessage, setLastMessage] = createSignal<string>("");
-  const ws = createWS("ws://192.168.50.12:3001");
+  const ws = createReconnectingWS(WS_URL);
   const messageEvent = createEventSignal(ws, "message");
 
   const player = makeAudio(SOUND_FILE);
